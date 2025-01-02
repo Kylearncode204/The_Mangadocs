@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".UploadStoryActivity">
+
+    <!-- Tiêu đề -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Tiêu đề truyện"
+        app:boxBackgroundMode="outline"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Tác giả -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilAuthor"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Tác giả"
+        app:boxBackgroundMode="outline"
+        app:layout_constraintTop_toBottomOf="@id/tilTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etAuthor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Thể loại -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilGenre"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Thể loại"
+        app:boxBackgroundMode="outline"
+        app:layout_constraintTop_toBottomOf="@id/tilAuthor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etGenre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Mô tả -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Mô tả truyện"
+        app:boxBackgroundMode="outline"
+        app:layout_constraintTop_toBottomOf="@id/tilGenre"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:minLines="3" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Chọn ảnh bìa -->
+    <Button
+        android:id="@+id/btnSelectCover"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chọn ảnh bìa"
+        app:layout_constraintTop_toBottomOf="@id/tilDescription"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp" />
+
+    <!-- Hiển thị ảnh bìa -->
+    <ImageView
+        android:id="@+id/ivCoverPreview"
+        android:layout_width="100dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/tilDescription"
+        app:layout_constraintStart_toEndOf="@id/btnSelectCover"
+        android:scaleType="centerCrop"
+        android:background="@drawable/preview_background" />
+
+    <!-- Nút tải nội dung -->
+    <Button
+        android:id="@+id/btnUploadContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tải nội dung lên"
+        app:layout_constraintTop_toBottomOf="@id/btnSelectCover"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp" />
+
+    <!-- Nút đăng -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSubmit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Đăng truyện"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@id/btnUploadContent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:cornerRadius="16dp"
+        app:backgroundTint="@color/teal_200" />
+</androidx.constraintlayout.widget.ConstraintLayout>

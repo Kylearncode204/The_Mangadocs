@@ -58,11 +58,17 @@ public class MainActivity extends AppCompatActivity {
             Log.e("MainActivity", "RecyclerView not found!");
         }
         bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.nav_home); // Mặc định chọn Trang chủ
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.nav_home) {
                 return true;
             } else if (item.getItemId() == R.id.nav_profile) {
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(intent);
+                return true;
+            }
+            else if(item.getItemId()==R.id.nav_upload){
+                Intent intent = new Intent(MainActivity.this, UploadStoryActivity.class);
                 startActivity(intent);
                 return true;
             }
@@ -108,5 +114,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e("MainActivity", "Error in fetchComicsFromApi: ", e);
             Toast.makeText(this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+
     }
+
 }

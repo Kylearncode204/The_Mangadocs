@@ -1,20 +1,27 @@
 package kytallo.com.themangadocs;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import kytallo.com.themangadocs.R;
+
 public class UploadStoryActivity extends AppCompatActivity {
-    private EditText etTitle, etAuthor, etGenre, etDescription;
+
+    private EditText etTitle, etAuthor, etDescription;
+    private RadioGroup rgStoryType;
+    private Button btnSelectCover, btnUploadContent, btnSubmit;
     private ImageView ivCoverPreview;
     private Uri coverUri;
 
@@ -23,19 +30,35 @@ public class UploadStoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_story);
 
+        // Khởi tạo các thành phần giao diện
         etTitle = findViewById(R.id.etTitle);
         etAuthor = findViewById(R.id.etAuthor);
-        etGenre = findViewById(R.id.etGenre);
         etDescription = findViewById(R.id.etDescription);
+        rgStoryType = findViewById(R.id.rgStoryType);
+        btnSelectCover = findViewById(R.id.btnSelectCover);
+        btnUploadContent = findViewById(R.id.btnUploadContent);
+        btnSubmit = findViewById(R.id.btnSubmit);
         ivCoverPreview = findViewById(R.id.ivCoverPreview);
 
-        findViewById(R.id.btnSelectCover).setOnClickListener(v -> selectImage());
-        findViewById(R.id.btnSubmit).setOnClickListener(v -> uploadStory());
-    }
+        // Xử lý thay đổi loại truyện
+        rgStoryType.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.rbManga) {
+                etDescription.setVisibility(View.GONE);
+                btnUploadContent.setVisibility(View.VISIBLE);
+            } else if (checkedId == R.id.rbNovel) {
+                etDescription.setVisibility(View.VISIBLE);
+                btnUploadContent.setVisibility(View.GONE);
+            }
+        });
 
-    private void selectImage() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, 101);
+        // Chọn ảnh bìa
+        btnSelectCover.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, 101);
+        });
+
+        // Nút đăng truyện
+        btnSubmit.setOnClickListener(v -> submitStory());
     }
 
     @Override
@@ -48,19 +71,35 @@ public class UploadStoryActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadStory() {
-        String title = etTitle.getText().toString();
-        String author = etAuthor.getText().toString();
-        String genre = etGenre.getText().toString();
-        String description = etDescription.getText().toString();
+    private void submitStory() {
+        String title = etTitle.getText().toString().trim();
+        String author = etAuthor.getText().toString().trim();
+        String description = etDescription.getText().toString().trim();
+        boolean isManga = rgStoryType.getCheckedRadioButtonId() == R.id.rbManga;
 
-        if (title.isEmpty() || author.isEmpty() || genre.isEmpty() || coverUri == null) {
-            Toast.makeText(this, "Vui lòng điền đủ thông tin", Toast.LENGTH_SHORT).show();
+        if (title.isEmpty() || author.isEmpty() || coverUri == null) {
+            Toast.makeText(this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Upload thông tin truyện lên server hoặc lưu vào database
-        // Gửi coverUri dưới dạng hình ảnh hoặc đường dẫn
-        Toast.makeText(this, "Đăng truyện thành công!", Toast.LENGTH_SHORT).show();
+        if (isManga && !btnUploadContent.isShown()) {
+            Toast.makeText(this, "Vui lòng tải lên nội dung truyện tranh", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Xử lý gửi dữ liệu lên server hoặc lưu vào database
+        Toast.makeText(this, "Truyện đã được đăng thành công!", Toast.LENGTH_SHORT).show();
+
+        // Reset giao diện sau khi đăng truyện
+        resetForm();
+    }
+
+    private void resetForm() {
+        etTitle.setText("");
+        etAuthor.setText("");
+        etDescription.setText("");
+        ivCoverPreview.setVisibility(View.GONE);
+        rgStoryType.check(R.id.rbManga);
+        btnUploadContent.setVisibility(View.VISIBLE);
     }
 }

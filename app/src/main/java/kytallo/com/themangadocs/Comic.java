@@ -60,6 +60,10 @@ public class Comic implements Parcelable {
         }
         return null;
     }
+
+
+
+
     public static class Attributes implements Parcelable {
         private Title title;
         private Description description;

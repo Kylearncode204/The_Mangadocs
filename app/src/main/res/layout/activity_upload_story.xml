@@ -113,5 +113,9 @@
             android:text="Đăng truyện"
             app:cornerRadius="16dp"
             app:backgroundTint="@color/teal_200" />
+
+
     </LinearLayout>
+
+
 </ScrollView>

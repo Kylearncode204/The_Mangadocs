@@ -42,8 +42,9 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (databaseHelper.checkUser(email, password)) {
+            int userId = databaseHelper.getUserId(email, password);
             SessionManager sessionManager = new SessionManager(this);
-            sessionManager.setLogin(true, email);
+            sessionManager.setLogin(true, email, userId);
 
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

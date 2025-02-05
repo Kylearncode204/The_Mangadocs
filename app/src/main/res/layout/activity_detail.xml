@@ -34,7 +34,14 @@
             android:text="Tên Truyện:"
             android:textSize="20sp"
             android:textStyle="bold" />
-
+        <!-- Tác giả -->
+        <TextView
+            android:id="@+id/tvStoryAuthor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tác giả: "
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp" />
         <TextView
             android:id="@+id/tvDetailDescription"
             android:layout_width="wrap_content"
@@ -48,5 +55,26 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Đọc Truyện" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp">
+
+            <Button
+                android:id="@+id/btnFollowStory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Theo dõi"
+                android:layout_marginEnd="16dp" />
+
+            <Button
+                android:id="@+id/btnFavoriteStory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Yêu thích" />
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>

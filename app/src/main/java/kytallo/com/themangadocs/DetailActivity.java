@@ -16,7 +16,7 @@ public class DetailActivity extends AppCompatActivity {
     private Comic comic;
     private Button btnFavorite, btnFollowStory;
     private ImageView imgDetailCover;
-    private TextView tvDetailTitle, tvDetailDescription;
+    private TextView tvDetailTitle, tvDetailDescription,tvFavoriteCount;
     private Button btnRead;
     private ProgressBar progressBar;
 
@@ -41,6 +41,7 @@ public class DetailActivity extends AppCompatActivity {
         tvDetailTitle = findViewById(R.id.tvDetailTitle);
         tvDetailDescription = findViewById(R.id.tvDetailDescription);
         btnRead = findViewById(R.id.btnRead);
+        tvFavoriteCount = findViewById(R.id.tvFavoriteCount);
         progressBar = findViewById(R.id.progressBar);
     }
 
@@ -55,7 +56,9 @@ public class DetailActivity extends AppCompatActivity {
             } else {
                 imgDetailCover.setImageResource(R.drawable.img);
             }
-
+            DatabaseHelper dbHelper = new DatabaseHelper(this);
+            int favoriteCount = dbHelper.getFavoriteCountForComic(comic.getId());
+            tvFavoriteCount.setText(favoriteCount + " người yêu thích");
             if (comic.getAttributes() != null) {
                 String title = comic.getAttributes().getTitle() != null ?
                         comic.getAttributes().getTitle().getEn() : "Không có tiêu đề";

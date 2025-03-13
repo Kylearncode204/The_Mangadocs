@@ -1,5 +1,6 @@
 package kytallo.com.themangadocs;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -15,9 +16,14 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 import retrofit2.Call;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -62,11 +68,17 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.nav_home) {
                 return true;
-            } else if (item.getItemId() == R.id.nav_profile) {
+            }
+            else if (item.getItemId()== R.id.nav_favorites) {
+                startActivity(new Intent(MainActivity.this, FavoritesActivity.class));
+                return true;
+            }
+            else if (item.getItemId() == R.id.nav_profile) {
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 startActivity(intent);
                 return true;
             }
+
             else if(item.getItemId()==R.id.nav_upload){
                 Intent intent = new Intent(MainActivity.this, UploadStoryActivity.class);
                 startActivity(intent);
@@ -75,6 +87,13 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
+        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String lastCheckin = prefs.getString("lastCheckinDate", "");
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+        if (!today.equals(lastCheckin)) {
+            new CheckinDialog(this).show();
+        }
 
 
         fetchComicsFromApi();

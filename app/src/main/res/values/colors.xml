@@ -8,6 +8,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="Blue">#3EAEF4</color>
+    <color name="gold">#FFD700</color>
     <color name="Pink">#FF66FF</color>
+    <color name="gray">#C0C0C0</color>
+    <color name="xanh">#9FD7F9</color>
+    <color name="nav_item_color">@android:color/white</color>
+
 
 </resources>

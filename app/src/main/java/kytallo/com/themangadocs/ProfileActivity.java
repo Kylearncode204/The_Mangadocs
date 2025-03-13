@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.List;
+
 public class ProfileActivity extends AppCompatActivity {
     private SessionManager sessionManager;
     private DatabaseHelper databaseHelper;
@@ -25,6 +27,8 @@ public class ProfileActivity extends AppCompatActivity {
     private Button btnEditProfile, btnLogout;
     private BottomNavigationView bottomNavigationView;
     private TextView tvReadCount, tvReadingCount, tvPlanToReadCount;
+    private RecyclerView rvUploadedStories;
+    private ComicAdapter adapter;
 
 
     @Override
@@ -54,6 +58,8 @@ public class ProfileActivity extends AppCompatActivity {
         tvPlanToReadCount = findViewById(R.id.tvPlanToReadCount);
 
         rvRecentActivity.setLayoutManager(new LinearLayoutManager(this));
+        rvUploadedStories = findViewById(R.id.rvUploadedStories);
+        rvUploadedStories.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void setupNavigationView() {
@@ -99,7 +105,19 @@ public class ProfileActivity extends AppCompatActivity {
             String username = cursor.getString(0);
             tvUsername.setText(username);
         }
+        // Trong loadUserData()
+        List<Comic> uploadedStories = databaseHelper.getUploadedStories(sessionManager.getUserId());
+        adapter = new ComicAdapter(uploadedStories, comic -> {
+            Intent intent = new Intent(this, DetailActivity.class);
+            intent.putExtra("comic", comic);
+            startActivity(intent);
+        });
+
+
+// Cập nhật thống kê
+        tvReadCount.setText(String.valueOf(databaseHelper.getReadCount(sessionManager.getUserId())));
         cursor.close();
+        rvUploadedStories.setAdapter(adapter);
 
         // Set số liệu thống kê (có thể thay đổi theo logic của ứng dụng)
         tvReadCount.setText("0");
@@ -122,3 +140,4 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 }
+

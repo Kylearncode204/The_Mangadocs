@@ -4,6 +4,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "UserDB";
     private static final int DATABASE_VERSION = 2;
@@ -46,6 +51,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_USER_ID + " INTEGER, "
                 + COLUMN_STORY_ID + " TEXT)";
         db.execSQL(CREATE_FOLLOWS_TABLE);
+        // Thêm bảng lịch sử đọc truyện
+        String CREATE_READING_HISTORY_TABLE = "CREATE TABLE reading_history ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "user_id INTEGER,"
+                + "comic_id TEXT,"
+                + "timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)";
+        db.execSQL(CREATE_READING_HISTORY_TABLE);
     }
     public long addFollowStory(int userId, String storyId) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -53,6 +65,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_USER_ID, userId);
         values.put(COLUMN_STORY_ID, storyId);
         return db.insert(TABLE_FOLLOWS, null, values);
+    }
+
+    public int getReadCount(int userId) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT COUNT(*) FROM reading_history WHERE user_id = ?",
+                new String[]{String.valueOf(userId)}
+        );
+        int count = cursor.moveToFirst() ? cursor.getInt(0) : 0;
+        cursor.close();
+        return count;
+    }
+    public boolean updateUserProfile(int userId, String username, String email, String password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_USERNAME, username);
+        values.put(COLUMN_EMAIL, email);
+        if (!TextUtils.isEmpty(password)) {
+            values.put(COLUMN_PASSWORD, password);
+        }
+        int rowsAffected = db.update(TABLE_USERS, values, COLUMN_ID + " = ?", new String[]{String.valueOf(userId)});
+        return rowsAffected > 0;
+    }
+    public void addReadingHistory(int userId, String comicId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("user_id", userId);
+        values.put("comic_id", comicId);
+        db.insert("reading_history", null, values);
     }
 
     public boolean isFollowedStory(int userId, String storyId) {
@@ -163,5 +204,81 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         boolean exists = cursor.getCount() > 0;
         cursor.close();
         return exists;
+    }
+    public List<String> getFavoriteComicIds(int userId) {
+        List<String> comicIds = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_FAVORITES,
+                new String[]{COLUMN_COMIC_ID},
+                COLUMN_USER_ID + "=?",
+                new String[]{String.valueOf(userId)},
+                null, null, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                comicIds.add(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_COMIC_ID)));
+            }
+            cursor.close();
+        }
+        return comicIds;
+    }
+    public int getFavoriteCountForComic(String comicId) {
+        int count = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_FAVORITES + " WHERE " + COLUMN_COMIC_ID + "=?", new String[]{comicId});
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                count = cursor.getInt(0);
+            }
+            cursor.close();
+        }
+        return count;
+    }
+    public List<Comic> getUploadedStories(int userId) {
+        List<Comic> stories = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM uploaded_stories WHERE user_id = ?",
+                new String[]{String.valueOf(userId)}
+        );
+        // Giả sử có bảng uploaded_stories lưu thông tin truyện
+        while (cursor.moveToNext()) {
+            Comic comic = new Comic();
+            comic.setId(cursor.getString(1));
+            // ... Lấy các trường dữ liệu khác
+            stories.add(comic);
+        }
+        cursor.close();
+        return stories;
+    }
+
+    public List<String> getFollowedAuthorIds(int userId) {
+        List<String> authorIds = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_AUTHOR_FAVORITES,
+                new String[]{COLUMN_AUTHOR_ID},
+                COLUMN_USER_ID + "=?",
+                new String[]{String.valueOf(userId)},
+                null, null, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                authorIds.add(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AUTHOR_ID)));
+            }
+            cursor.close();
+        }
+        return authorIds;
+    }
+
+    // Đếm số người theo dõi cho một tác giả (dựa theo author_id)
+    public int getFollowCountForAuthor(String authorId) {
+        int count = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_AUTHOR_FAVORITES + " WHERE " + COLUMN_AUTHOR_ID + "=?", new String[]{authorId});
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                count = cursor.getInt(0);
+            }
+            cursor.close();
+        }
+        return count;
     }
 }

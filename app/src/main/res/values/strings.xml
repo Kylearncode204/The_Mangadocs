@@ -5,4 +5,5 @@
     <string name="no_title">Không có tiêu đề</string>
     <string name="no_description">Không có mô tả</string>
     <string name="read_manga">Đọc Truyện</string>
+    <string name="search">Search</string>
 </resources>

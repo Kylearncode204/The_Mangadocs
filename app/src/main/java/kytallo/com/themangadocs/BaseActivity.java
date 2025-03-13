@@ -1,4 +1,8 @@
 package kytallo.com.themangadocs;
 
-public class BaseActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public abstract class BaseActivity extends AppCompatActivity {
+    protected abstract void setupViews();
+    protected abstract void setupListeners();
 }
